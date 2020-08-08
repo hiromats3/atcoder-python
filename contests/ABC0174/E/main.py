@@ -3,43 +3,22 @@ import math
 def resolve():
     N, K = map(int, input().split())
     A = list(map(int, input().split()))
-    A.sort()
-    B = []
 
-    if K == 0:
-        print(A[-1])
-        return
-    else:
-        temp = A.pop(-1) / 2
-        B.append(temp)
-        B.append(temp)
+    def _f(length: int) -> bool:
+        count = 0
+        for a in A:
+            count += int((a-1) / length)
+        return count <= K
 
-    for _ in range(K - 1):
-        try:
-            a = A[-1]
-            b = B[0]
-        except Exception as err:
-            print(err)
-            print(A, B)
-            return
-
-        temp = A.pop(-1) if a > b else B.pop(0)
-        temp /= 2
-        for i in range(len(B)):
-            if temp > B[i]:
-                B.insert(i, temp)
-                B.insert(i, temp)
-                temp = 0
-                break
-        if temp != 0:
-            B.insert(i, temp)
-            B.insert(i, temp)
-    
-    ans = B[0]
-    if len(A) > 0 and A[-1] > ans:
-        ans = A[-1]
-
-    print(math.ceil(ans))
+    l = 0
+    r = 10**9
+    while (r-l) > 1:
+        mid = (l+r) // 2
+        if _f(mid):
+            r = mid
+        else:
+            l = mid
+    print(r)
 
 if __name__ == "__main__":
     resolve()

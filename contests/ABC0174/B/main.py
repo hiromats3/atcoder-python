@@ -6,8 +6,7 @@ def resolve():
     ans = 0
     for _ in range(N):
         x, y = map(int, input().split())
-        dist = math.sqrt(x*x + y*y)
-        if dist <= D:
+        if x*x + y*y <= D*D:
             ans += 1
     print(ans)
 
