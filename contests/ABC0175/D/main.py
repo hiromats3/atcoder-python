@@ -2,28 +2,27 @@ def resolve():
     N, K = map(int, input().split())
     P = list(map(int, input().split()))
     C = list(map(int, input().split()))
-
-    ans = -100100100
     for i in range(N):
-        node_set = set()
+        P[i] -= 1
+
+    ans = -1e18
+    for i in range(N):
         n = P[i]
-        score = 0
-        t = []
-        while n not in node_set:
-            score += C[n-1]
+        score = C[n]
+        t = [score]
+        while n != i:
+            n = P[n]
+            score += C[n]
             t.append(score)
-            node_set.add(n)
-            n = P[n-1]
 
-        if K < len(t):
-            max_t = max(t[:K])
-        else:
-            max_t = max(t)
-            if t[-1] > 0:
-                temp = t[-1] * int(K / len(t)) + max([0] + t[:K%len(t)])
-                max_t = max(max_t, temp)
-        ans = max(ans, max_t)
-
+        total = t[-1]
+        l = len(t)
+        for i in range(min(K, l)):
+            temp_score = t[i]
+            if total > 0 and K > l:
+                e = int((K-(i+1))/l)
+                temp_score += total*e
+            ans = max(ans, temp_score)
     print(ans)
 
 
