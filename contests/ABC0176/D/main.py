@@ -1,41 +1,74 @@
+from collections import deque
+
 def resolve():
-    H, W, M = map(int, input().split())
-    pos = []
-    for _ in range(M):
-        pos.append(list(map(int, input().split())))
+    H, W = map(int, input().split())
+    Ch, Cw = map(int, input().split())
+    Dh, Dw = map(int, input().split())
+    S = []
+    for _ in range(H):
+        S.append([s for s in input()])
 
-    h_totals = [0] * (H+1)
-    w_totals = [0] * (W+1)
-    overlap = [set() for _ in range(H+1)]
+    # 座標と配列番号を揃える
+    Ch -= 1
+    Cw -= 1
+    Dh -= 1
+    Dw -= 1
+    # 上下左右の移動で楽する工夫
+    walk = [(-1,0), (0,-1), (1,0), (0,1)]
+    warp = [(-2,-2), (-2,-1), (-2,0), (-2,1), (-2,2),
+        (-1,-2), (-1,-1), (-1,1), (-1,2),
+        (0,-2), (0,2),
+        (1,-2), (1,-1), (1,1), (1,2),
+        (2,-2), (2,-1), (2,0), (2,1), (2,2)]
 
-    for ph, pw in pos:
-        h_totals[ph] += 1
-        w_totals[pw] += 1
-        overlap[ph].add(pw)
+    # コスト格納用の盤面
+    INF = 10**9
+    dist = [[INF] * W for _ in range(H)]
+    dist[Ch][Cw] = -1
 
-    max_h = -1
-    max_w = -1
-    h_list = []
-    w_list = []
-    for i in range(1, H+1):
-        if h_totals[i] > max_h:
-            max_h = h_totals[i]
-            h_list = [i]
-        elif h_totals[i] == max_h:
-            h_list.append(i)
-    for j in range(1, W+1):
-        if w_totals[j] > max_w:
-            max_w = w_totals[j]
-            w_list = [j]
-        elif w_totals[j] == max_w:
-            w_list.append(j)
+    # dequeの定義、(h座標, w座標, コスト)のタプルを格納する
+    deq = deque()
+    deq.append((Ch, Cw, 0))
 
-    for i in h_list:
-        for j in w_list:
-            if j not in overlap[i]:
-                print(max_h + max_w)
-                return
-    print(max_h + max_w - 1)
+    while len(deq) > 0:
+        (h, w, d) = deq.popleft()
+        # 探索済みマスかどうか
+        if dist[h][w] < d and dist[h][w] != -1:
+            continue
+        # コスト0の移動を検証
+        for (dh, dw) in walk:
+            nh = h + dh
+            nw = w + dw
+            # 盤面外かどうか
+            if (nh < 0) or (nw < 0) or (nh >= H) or (nw >= W):
+                continue
+            # 道があるかどうか
+            if S[nh][nw] == '#':
+                continue
+            # 探索済みかどうか
+            if dist[nh][nw] <= d:
+                continue
+            dist[nh][nw] = d
+            deq.appendleft((nh, nw, d))
+        # コスト1の移動を検証
+        for (dh, dw) in warp:
+            nh = h + dh
+            nw = w + dw
+            # 盤面外かどうか
+            if (nh < 0) or (nw < 0) or (nh >= H) or (nw >= W):
+                continue
+            # 道があるかどうか
+            if S[nh][nw] == '#':
+                continue
+            # 探索済みかどうか
+            if dist[nh][nw] <= d+1:
+                continue
+            dist[nh][nw] = d+1
+            deq.append((nh, nw, d+1))
+    ans = dist[Dh][Dw]
+    if ans == INF:
+        ans = -1
+    print(ans)
 
 if __name__ == "__main__":
     resolve()

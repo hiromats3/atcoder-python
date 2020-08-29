@@ -16,35 +16,47 @@ class TestClass(unittest.TestCase):
         self.assertEqual(out, output)
 
     def test_入力例_1(self):
-        input = """2 3 3
-2 2
+        input = """4 4
 1 1
-1 3"""
-        output = """3"""
+4 4
+..#.
+..#.
+.#..
+.#.."""
+        output = """1"""
         self.assertIO(input, output)
 
     def test_入力例_2(self):
-        input = """3 3 4
-3 3
-3 1
-1 1
-1 2"""
-        output = """3"""
+        input = """4 4
+1 4
+4 1
+.##.
+####
+####
+.##."""
+        output = """-1"""
         self.assertIO(input, output)
 
     def test_入力例_3(self):
-        input = """5 5 10
-2 5
-4 3
-2 3
-5 5
+        input = """4 4
 2 2
-5 4
-5 3
-5 1
-3 5
-1 4"""
-        output = """6"""
+3 3
+....
+....
+....
+...."""
+        output = """0"""
+        self.assertIO(input, output)
+
+    def test_入力例_4(self):
+        input = """4 5
+1 2
+2 5
+#.###
+####.
+#..##
+#..##"""
+        output = """2"""
         self.assertIO(input, output)
 
 
